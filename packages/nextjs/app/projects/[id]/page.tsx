@@ -27,7 +27,7 @@ export default function ProjectDetailPage() {
   const { data: projectEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectCreated",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     filters: {
       id: BigInt(projectId),
     },
@@ -40,7 +40,7 @@ export default function ProjectDetailPage() {
   const { data: completedEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectCompleted",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     filters: {
       id: BigInt(projectId),
     },
@@ -55,7 +55,7 @@ export default function ProjectDetailPage() {
   const { data: donationEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "DonationMade",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     filters: {
       id: BigInt(projectId),
     },
@@ -66,7 +66,7 @@ export default function ProjectDetailPage() {
   const { data: fundsWithdrawnEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "FundsWithdrawn",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     filters: {
       id: BigInt(projectId),
     },

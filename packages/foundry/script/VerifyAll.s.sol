@@ -87,7 +87,7 @@ contract VerifyAll is Script {
             deployedBytecode.length - compiledBytecode.length
         );
 
-        string[] memory inputs = new string[](9);
+        string[] memory inputs = new string[](11);
         inputs[0] = "forge";
         inputs[1] = "verify-contract";
         inputs[2] = vm.toString(contractAddr);
@@ -96,7 +96,9 @@ contract VerifyAll is Script {
         inputs[5] = vm.toString(block.chainid);
         inputs[6] = "--constructor-args";
         inputs[7] = vm.toString(constructorArgs);
-        inputs[8] = "--watch";
+        inputs[8] = "--etherscan-api-key";
+        inputs[9] = vm.envOr("ETHERSCAN_API_KEY", string(""));
+        inputs[10] = "--watch";
 
         FfiResult memory f = tempVm(address(vm)).tryFfi(inputs);
 

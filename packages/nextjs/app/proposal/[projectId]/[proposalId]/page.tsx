@@ -28,7 +28,7 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ proje
   const { data: proposalEvents, isLoading: isEventsLoading } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "ProposalCreated",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     filters: { projectId: BigInt(projectId), proposalId: BigInt(proposalId) },
     watch: true,
     transactionData: true,
@@ -38,7 +38,7 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ proje
   const { data: voteEvents } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "Voted",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: true,
   });
 
@@ -46,7 +46,7 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ proje
   const { data: executedEvents } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "ProposalExecuted",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: true,
   });
 

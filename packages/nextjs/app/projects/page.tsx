@@ -4,14 +4,20 @@ import { useState } from "react";
 import { CreateProjectForm } from "./_components/CreateProjectForm";
 import { ProjectList } from "./_components/ProjectList";
 import { Project } from "./types";
-import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+import { useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { formatTimestampToDate } from "~~/utils/crowdfunding-utils";
 
 export default function ProjectsPage() {
   const [activeTab, setActiveTab] = useState<"live" | "successful" | "failed">("live");
   const [showCreateForm, setShowCreateForm] = useState(false);
 
-  // 监听链上项目创建事件
+  // 直接读取合约中的项目数量
+  const { data: projectCount } = useScaffoldReadContract({
+    contractName: "Crowdfunding",
+    functionName: "getProjectCount",
+  });
+
+  // 监听链上项目创建事件，从合约部署区块开始监听
   const {
     data: projectEvents,
     isLoading,
@@ -20,25 +26,25 @@ export default function ProjectsPage() {
   } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectCreated",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: true,
     filters: {},
   });
 
-  // 监听项目完成事件
+  // 监听项目完成事件，从合约部署区块开始监听
   const { data: completedEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectCompleted",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: true,
     filters: {},
   });
 
-  // 监听项目失败事件
+  // 监听项目失败事件，从合约部署区块开始监听
   const { data: failedEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectFailed",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: true,
     filters: {},
   });
@@ -96,7 +102,10 @@ export default function ProjectsPage() {
 
   const renderHeader = () => (
     <div className="flex justify-between items-center mb-8">
-      <h1 className="text-3xl font-bold">项目列表</h1>
+      <div>
+        <h1 className="text-3xl font-bold">项目列表</h1>
+        {projectCount !== undefined && <p className="text-sm text-gray-500">总项目数: {projectCount.toString()}</p>}
+      </div>
       <button className="btn btn-primary" onClick={() => setShowCreateForm(!showCreateForm)}>
         {showCreateForm ? "取消" : "创建项目"}
       </button>

@@ -12,7 +12,7 @@ export function ProjectInfo({ project, projectId }: ProjectInfoProps) {
   const { data: allowenceIncreasedEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "AllowenceIncreased",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     filters: {
       id: BigInt(projectId),
     },

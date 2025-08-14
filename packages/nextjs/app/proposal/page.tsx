@@ -19,7 +19,7 @@ export default function ProposalPage() {
   } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "ProposalCreated",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: true,
     transactionData: true,
   });
@@ -28,7 +28,7 @@ export default function ProposalPage() {
   const { data: voteEvents } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "Voted",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: true,
   });
 
@@ -36,7 +36,7 @@ export default function ProposalPage() {
   const { data: executedEvents } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "ProposalExecuted",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: true,
   });
 

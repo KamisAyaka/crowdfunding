@@ -29,7 +29,7 @@ export default function NFTsPage() {
   } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "NFTMinted",
-    fromBlock: 0n,
+    fromBlock: 8980233n,
     watch: false, // 关闭实时监听以避免无限循环
     filters: {
       recipient: address as `0x${string}`,
