@@ -1,5 +1,7 @@
 # 去中心化众筹平台
 
+[切换到中文版本](zh_README.md) | [Switch to English version](README.md)
+
 基于Solidity的智能合约系统，集成NFT奖励与链上治理机制
 
 ## 项目概述
@@ -22,7 +24,7 @@
 - `refund()` 捐赠者赎回资金（项目失败之后可以取回）
 
 #### 数据结构
-```solidity
+``solidity
 struct Project {
     uint id; // 项目唯一标识
     address payable creator; // 项目发起人地址
@@ -195,7 +197,7 @@ curl -H "Content-Type: application/json" -X POST --data '{
 - 💸 资金提取需通过allowence额度控制
 
 ## 事件监控
-```solidity
+``solidity
 // 项目事件
 event ProjectCreated(
     uint indexed id,

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Donation } from "../types";
 import { Project } from "../types";
@@ -142,9 +143,9 @@ export default function ProjectDetailPage() {
         <div className="text-center py-12">
           <h2 className="text-2xl font-bold mb-4">项目未找到</h2>
           <p>无法找到指定的项目</p>
-          <a href="/projects" className="btn btn-primary mt-4">
+          <Link href="/projects" className="btn btn-primary mt-4">
             返回项目列表
-          </a>
+          </Link>
         </div>
       </div>
     );

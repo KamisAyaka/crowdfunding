@@ -1,5 +1,7 @@
 # 🏗 Scaffold-ETH 2 - Decentralized Crowdfunding Platform
 
+[切换到中文版本](zh_README.md) | [Switch to English version](README.md)
+
 <h4 align="center">
   <a href="https://docs.scaffoldeth.io">Documentation</a> |
   <a href="https://scaffoldeth.io">Website</a>
@@ -32,7 +34,7 @@ This system implements a decentralized crowdfunding platform with three core sma
 - `refund()` Donors can reclaim funds if project fails
 
 #### Data Structure
-```solidity
+``solidity
 struct Project {
     uint id; // Unique project identifier
     address payable creator; // Project creator address

@@ -17,7 +17,14 @@ export function ProjectInfo({ project, projectId }: ProjectInfoProps) {
       id: BigInt(projectId),
     },
     watch: true,
+    enabled: true,
   });
+
+  // 计算已增加的allowence总额
+  const totalAllowenceIncreased = allowenceIncreasedEvents?.reduce(
+    (sum, event) => sum + (event.args.allowence || 0n),
+    0n,
+  );
 
   // 获取提案失败次数
   const { data: proposalFailureCount } = useScaffoldReadContract({
@@ -86,6 +93,17 @@ export function ProjectInfo({ project, projectId }: ProjectInfoProps) {
             </div>
             <div className="stat-desc text-lg">连续失败3次项目将失败</div>
           </div>
+
+          {/* 已批准资金 */}
+          {totalAllowenceIncreased !== undefined && totalAllowenceIncreased > 0n && (
+            <div className="stat">
+              <div className="stat-title text-xl">已批准资金</div>
+              <div className="stat-value text-info text-4xl">
+                {(Number(totalAllowenceIncreased) / 1e18).toFixed(2)} ETH
+              </div>
+              <div className="stat-desc text-lg">通过提案获得的资金</div>
+            </div>
+          )}
 
           {/* 项目失败状态 */}
           {project.completed && !project.successful && (

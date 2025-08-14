@@ -48,6 +48,21 @@ const Home: NextPage = () => {
             </div>
           </div>
         }
+
+        {/* GitHub链接 */}
+        <div className="mt-8 mb-8 text-center">
+          <p className="text-gray-500">
+            在 GitHub 上查看我们的项目:{" "}
+            <a
+              href="https://github.com/KamisAyaka/crowdfunding"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              github.com/KamisAyaka/crowdfunding
+            </a>
+          </p>
+        </div>
       </div>
     </>
   );

@@ -24,6 +24,7 @@ export function NFTInfo({ tokenId, projectId, rank, donationAmount }: NFTData) {
     try {
       return BigInt(amount) || 0n;
     } catch (e) {
+      console.error("Failed to parse donation amount:", e);
       return 0n;
     }
   };

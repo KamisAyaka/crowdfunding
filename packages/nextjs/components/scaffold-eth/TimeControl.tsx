@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { hardhat } from "viem/chains";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useTargetNetwork } from "~~/hooks/scaffold-eth";
@@ -19,12 +19,8 @@ export const TimeControl = () => {
   const [timeIncrease, setTimeIncrease] = useState(3600); // Default to 1 hour
   const [currentBlockTimestamp, setCurrentBlockTimestamp] = useState<bigint | null>(null);
 
-  // Only show on Hardhat network
-  if (targetNetwork.id !== hardhat.id) {
-    return null;
-  }
-
-  const fetchCurrentBlockTimestamp = async () => {
+  const fetchCurrentBlockTimestamp = useCallback(async () => {
+    if (targetNetwork.id !== hardhat.id) return;
     try {
       setIsLoading(true);
       const block = await testClient.getBlock();
@@ -34,7 +30,11 @@ export const TimeControl = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [targetNetwork.id]);
+
+  useEffect(() => {
+    fetchCurrentBlockTimestamp();
+  }, [targetNetwork.id, fetchCurrentBlockTimestamp]);
 
   const increaseTime = async () => {
     try {
@@ -67,9 +67,10 @@ export const TimeControl = () => {
     setTimeIncrease(seconds);
   };
 
-  useEffect(() => {
-    fetchCurrentBlockTimestamp();
-  }, [targetNetwork.id]);
+  // Only show on Hardhat network
+  if (targetNetwork.id !== hardhat.id) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col sm:flex-row gap-2 items-center justify-center bg-base-100 rounded-full px-4 py-2 shadow-md">
