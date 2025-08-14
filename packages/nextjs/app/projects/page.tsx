@@ -52,8 +52,15 @@ export default function ProjectsPage() {
   // 处理项目数据
   const projects: Project[] =
     projectEvents
-      ?.map(event => {
+      ?.reduce((uniqueProjects: Project[], event) => {
         const projectId = Number(event.args.id);
+
+        // 检查是否已处理过该项目
+        const existingProject = uniqueProjects.find(p => p.id === projectId);
+        if (existingProject) {
+          // 如果项目已存在，跳过以避免重复
+          return uniqueProjects;
+        }
 
         // 检查项目是否已完成
         const completedEvent = completedEvents?.find(compEvent => Number(compEvent.args.id) === projectId);
@@ -72,7 +79,7 @@ export default function ProjectsPage() {
           status = "successful";
         }
 
-        return {
+        const newProject: Project = {
           id: projectId,
           name: event.args.name || "未命名项目",
           description: event.args.description || "暂无描述",
@@ -88,7 +95,14 @@ export default function ProjectsPage() {
           status,
           totalWithdrawn: 0,
         };
-      })
+
+        // 只有当项目有有效名称和创建者时才添加
+        if (newProject.name && newProject.creator) {
+          return [...uniqueProjects, newProject];
+        }
+
+        return uniqueProjects;
+      }, [])
       .filter(project => project.name && project.creator) || []; // 过滤掉关键字段为空的项目
 
   const liveProjects = projects.filter(project => project.status === "live");

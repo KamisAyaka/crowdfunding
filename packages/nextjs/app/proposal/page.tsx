@@ -42,9 +42,17 @@ export default function ProposalPage() {
 
   // 处理提案数据
   const proposals =
-    proposalEvents?.map(event => {
+    proposalEvents?.reduce((uniqueProposals: Proposal[], event) => {
       const projectId = Number(event.args.projectId);
       const proposalId = Number(event.args.proposalId);
+
+      // 检查是否已处理过该提案
+      const existingProposal = uniqueProposals.find(p => p.projectId === projectId && p.proposalId === proposalId);
+
+      // 如果提案已存在，跳过以避免重复
+      if (existingProposal) {
+        return uniqueProposals;
+      }
 
       // 查找该提案的投票事件
       const proposalVotes =
@@ -63,7 +71,7 @@ export default function ProposalPage() {
       // 使用通用函数计算执行状态
       const { isExecuted, isPassed } = calculateProposalStatus(executedEvent);
 
-      return {
+      const newProposal: Proposal = {
         projectId,
         proposalId,
         title: `项目 #${projectId} 的提案`,
@@ -76,7 +84,9 @@ export default function ProposalPage() {
         executed: isExecuted,
         passed: isPassed,
       };
-    }) || [];
+
+      return [...uniqueProposals, newProposal];
+    }, []) || [];
 
   // 使用单次遍历处理所有提案状态
   const { activeProposals, executedProposals, cancelledProposals } = proposals.reduce(
