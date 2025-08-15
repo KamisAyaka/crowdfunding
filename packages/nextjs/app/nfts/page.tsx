@@ -5,7 +5,7 @@ import Link from "next/link";
 import { NFTBox } from "./_components/NFTBox";
 import { useAccount } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
-import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 
 // 定义NFT数据类型
 interface NFTData {
@@ -21,6 +21,10 @@ export default function NFTsPage() {
   const [userNFTs, setUserNFTs] = useState<NFTData[]>([]);
   const [processedEvents, setProcessedEvents] = useState<string>("");
 
+  // 获取合约部署信息
+  const { data: deployedContract } = useDeployedContractInfo({ contractName: "Crowdfunding" });
+  const fromBlock = deployedContract?.deployedOnBlock ?? 0n;
+
   // 监听NFT铸造事件
   const {
     data: nftMintEvents,
@@ -29,7 +33,7 @@ export default function NFTsPage() {
   } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "NFTMinted",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: false, // 关闭实时监听以避免无限循环
     filters: {
       recipient: address as `0x${string}`,

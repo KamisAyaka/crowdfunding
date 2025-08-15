@@ -8,13 +8,17 @@ import { DonationLeaderboard } from "./_components/DonationLeaderboard";
 import { ProjectActionButtons } from "./_components/ProjectActionButtons";
 import { ProjectInfo } from "./_components/ProjectInfo";
 import { useAccount } from "wagmi";
-import { useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { formatTimestampToDate } from "~~/utils/crowdfunding-utils";
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
   const { address } = useAccount();
   const projectId = id ? (Array.isArray(id) ? parseInt((id[0] as string) || "0") : parseInt((id as string) || "0")) : 0;
+
+  // 获取合约部署信息
+  const { data: deployedContract } = useDeployedContractInfo({ contractName: "Crowdfunding" });
+  const fromBlock = deployedContract?.deployedOnBlock ?? 0n;
 
   // 获取项目信息
   const { data: projectData, isLoading: projectLoading } = useScaffoldReadContract({
@@ -27,7 +31,7 @@ export default function ProjectDetailPage() {
   const { data: projectEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectCreated",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     filters: {
       id: BigInt(projectId),
     },
@@ -40,7 +44,7 @@ export default function ProjectDetailPage() {
   const { data: completedEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectCompleted",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     filters: {
       id: BigInt(projectId),
     },
@@ -55,7 +59,7 @@ export default function ProjectDetailPage() {
   const { data: donationEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "DonationMade",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     filters: {
       id: BigInt(projectId),
     },
@@ -66,7 +70,7 @@ export default function ProjectDetailPage() {
   const { data: fundsWithdrawnEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "FundsWithdrawn",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     filters: {
       id: BigInt(projectId),
     },

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ProposalCard } from "./_components/ProposalCard";
 import { Proposal } from "./types";
-import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import { calculateProposalStatus, calculateProposalVotes, formatTimestampToDate } from "~~/utils/crowdfunding-utils";
 
 export { type Proposal } from "./types";
@@ -11,6 +11,9 @@ export { type Proposal } from "./types";
 export default function ProposalPage() {
   const [activeTab, setActiveTab] = useState<"active" | "executed" | "cancelled">("active");
 
+  // 获取合约部署信息
+  const { data: deployedContract } = useDeployedContractInfo({ contractName: "Crowdfunding" });
+  const fromBlock = deployedContract?.deployedOnBlock ?? 0n;
   // 监听提案创建事件
   const {
     data: proposalEvents,
@@ -19,7 +22,7 @@ export default function ProposalPage() {
   } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "ProposalCreated",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: true,
     transactionData: true,
   });
@@ -28,7 +31,7 @@ export default function ProposalPage() {
   const { data: voteEvents } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "Voted",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: true,
   });
 
@@ -36,7 +39,7 @@ export default function ProposalPage() {
   const { data: executedEvents } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "ProposalExecuted",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: true,
   });
 
