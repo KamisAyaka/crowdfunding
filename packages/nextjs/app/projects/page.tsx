@@ -4,12 +4,16 @@ import { useState } from "react";
 import { CreateProjectForm } from "./_components/CreateProjectForm";
 import { ProjectList } from "./_components/ProjectList";
 import { Project } from "./types";
-import { useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { formatTimestampToDate } from "~~/utils/crowdfunding-utils";
 
 export default function ProjectsPage() {
   const [activeTab, setActiveTab] = useState<"live" | "successful" | "failed">("live");
   const [showCreateForm, setShowCreateForm] = useState(false);
+
+  // 获取合约部署信息
+  const { data: deployedContract } = useDeployedContractInfo({ contractName: "Crowdfunding" });
+  const fromBlock = deployedContract?.deployedOnBlock ?? 0n;
 
   // 直接读取合约中的项目数量
   const { data: projectCount } = useScaffoldReadContract({
@@ -26,7 +30,7 @@ export default function ProjectsPage() {
   } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectCreated",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: true,
     filters: {},
   });
@@ -35,7 +39,7 @@ export default function ProjectsPage() {
   const { data: completedEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectCompleted",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: true,
     filters: {},
   });
@@ -44,7 +48,7 @@ export default function ProjectsPage() {
   const { data: failedEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "ProjectFailed",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: true,
     filters: {},
   });

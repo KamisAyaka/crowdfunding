@@ -1,6 +1,6 @@
 import { Project } from "../../types";
 import { Address } from "~~/components/scaffold-eth";
-import { useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 interface ProjectInfoProps {
   project: Project;
@@ -8,11 +8,15 @@ interface ProjectInfoProps {
 }
 
 export function ProjectInfo({ project, projectId }: ProjectInfoProps) {
+  // 获取合约部署信息
+  const { data: deployedContract } = useDeployedContractInfo({ contractName: "Crowdfunding" });
+  const fromBlock = deployedContract?.deployedOnBlock ?? 0n;
+
   // 获取AllowenceIncreased事件来动态计算可提取资金
   const { data: allowenceIncreasedEvents } = useScaffoldEventHistory({
     contractName: "Crowdfunding",
     eventName: "AllowenceIncreased",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     filters: {
       id: BigInt(projectId),
     },

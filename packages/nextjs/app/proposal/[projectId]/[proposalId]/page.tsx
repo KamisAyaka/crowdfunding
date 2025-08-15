@@ -8,7 +8,7 @@ import { ProposalStatusBadge } from "./_components/ProposalStatusBadge";
 import { ProposalVoteButtons } from "./_components/ProposalVoteButtons";
 import { useAccount } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
-import { useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useDeployedContractInfo, useScaffoldEventHistory, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { calculateProposalStatus, calculateProposalVotes, formatTimestampToDate } from "~~/utils/crowdfunding-utils";
 
 export default function ProposalDetailPage({ params }: { params: Promise<{ projectId: string; proposalId: string }> }) {
@@ -23,12 +23,14 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ proje
   const unwrappedParams = use(params);
   const projectId = parseInt(unwrappedParams.projectId);
   const proposalId = parseInt(unwrappedParams.proposalId);
+  const { data: deployedContract } = useDeployedContractInfo({ contractName: "ProposalGovernance" });
+  const fromBlock = deployedContract?.deployedOnBlock ?? 0n;
 
   // 获取提案创建事件
   const { data: proposalEvents, isLoading: isEventsLoading } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "ProposalCreated",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     filters: { projectId: BigInt(projectId), proposalId: BigInt(proposalId) },
     watch: true,
     transactionData: true,
@@ -38,7 +40,7 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ proje
   const { data: voteEvents } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "Voted",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: true,
   });
 
@@ -46,7 +48,7 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ proje
   const { data: executedEvents } = useScaffoldEventHistory({
     contractName: "ProposalGovernance",
     eventName: "ProposalExecuted",
-    fromBlock: 8980233n,
+    fromBlock: BigInt(fromBlock as bigint),
     watch: true,
   });
 
